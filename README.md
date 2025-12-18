@@ -48,7 +48,7 @@ This system addresses critical challenges faced by 2,100+ frontline staff:
 - **Frontend**: React 18, React Router
 - **Styling**: Custom CSS with modern design system
 - **Icons**: Lucide React
-- **Testing**: Jest, React Testing Library
+
 - **Language**: Thai/English bilingual support
 
 ## 📦 Installation
@@ -72,38 +72,9 @@ This system addresses critical challenges faced by 2,100+ frontline staff:
 4. **Open browser**
    Navigate to `http://localhost:3000`
 
-## 🧪 Testing
+## 🧪 Manual Testing
 
-### Run All Tests
-```bash
-npm test
-```
-
-### Test Coverage
-```bash
-npm test -- --coverage
-```
-
-### Test Categories
-
-#### 1. Component Tests
-- **SearchBox Component**: Input handling, filter functionality
-- **SearchResults Component**: Result display, loading states
-- **QuickAccess Component**: Category navigation
-- **Header Component**: Navigation functionality
-
-#### 2. Feature Tests
-- **Hybrid Search**: Vector, semantic, and hybrid result types
-- **Thai Language**: Text display and input handling
-- **Accessibility**: ARIA labels, keyboard navigation
-- **Error Handling**: Empty results, network errors
-
-#### 3. Integration Tests
-- **Search Flow**: End-to-end search functionality
-- **Navigation**: Route handling and page transitions
-- **Filter Integration**: Combined search and filtering
-
-### Manual Testing Scenarios
+### Testing Scenarios
 
 #### Search Functionality
 1. **Basic Search**
@@ -187,30 +158,6 @@ npm test -- --coverage
    - Verify loading states
    - Test timeout handling
 
-### Performance Testing
-
-#### Load Testing
-1. **Large Result Sets**
-   - Search for broad terms (e.g., "นโยบาย")
-   - Verify smooth scrolling with 100+ results
-   - Check memory usage
-
-2. **Search Speed**
-   - Measure search response time
-   - Target: < 2 seconds for most queries
-   - Test with various query lengths
-
-#### Usability Testing
-1. **Task Completion**
-   - Find specific HR policy (target: < 30 seconds)
-   - Locate IT troubleshooting guide
-   - Access recent policy updates
-
-2. **User Satisfaction**
-   - Intuitive navigation
-   - Clear result presentation
-   - Helpful error messages
-
 ## 🎨 Design Features
 
 ### Visual Design
@@ -252,15 +199,73 @@ REACT_APP_RESULTS_PER_PAGE=20
 
 ## 🚀 Deployment
 
-### Build for Production
-```bash
-npm run build
+### 🎯 Quick Deploy (แนะนำ)
+
+**PowerShell Script (Windows):**
+```powershell
+# Deploy ทั้งหมด (Infrastructure + Frontend)
+.\deployment\scripts\deploy.ps1
+
+# Deploy เฉพาะ Infrastructure
+.\deployment\scripts\deploy.ps1 -InfraOnly
+
+# Deploy เฉพาะ Frontend  
+.\deployment\scripts\deploy.ps1 -FrontendOnly
+
+# ดู help
+.\deployment\scripts\deploy.ps1 -Help
 ```
 
-### Deploy to Server
+### Manual Commands
+
+**Infrastructure (Terraform):**
 ```bash
-# Example deployment to nginx
-cp -r build/* /var/www/html/
+cd terraform
+terraform init
+terraform plan
+terraform apply
+```
+
+**Frontend Only:**
+```bash
+npm run build
+python deployment/scripts/deploy-frontend.py
+```
+
+### Current Deployment
+
+- **Application URL**: https://d5yzuaybkxsi6.cloudfront.net
+- **S3 Bucket**: `kb-engine-fe-dev-frontend-9d8c41f4`
+- **CloudFront Distribution**: `EFT7CUIIA5EDH`
+
+### Deployment Documentation
+
+- 📖 **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Complete deployment instructions
+- 🏗️ **[Infrastructure Guide](terraform/README.md)** - Terraform setup and configuration
+- 🔧 **[Production Guide](deployment/PRODUCTION.md)** - Production deployment checklist
+
+### AWS Resources Created
+
+- **S3 Bucket** - Static file hosting
+- **CloudFront** - Global CDN distribution  
+- **CloudWatch Logs** - Application monitoring and logging
+- **IAM Roles** - Secure access management
+
+### Prerequisites
+
+- ✅ Node.js v22+ (ปัจจุบัน: v22.17.1)
+- ✅ AWS CLI configured
+- ✅ Terraform installed
+- ✅ Python 3.x
+
+### Monitoring & Logs
+
+```bash
+# View application logs
+aws logs tail /aws/kb-engine-fe-dev/application --follow
+
+# Get CloudFront URL
+cd terraform && terraform output cloudfront_url
 ```
 
 ## 🤝 Contributing

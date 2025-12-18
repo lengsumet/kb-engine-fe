@@ -1,0 +1,34 @@
+# Example Terraform Variables Configuration
+# Copy this file to terraform.tfvars and customize the values for your environment
+
+# Project Configuration
+project_name = "kb-engine-fe"
+environment  = "dev"
+
+# AWS Configuration
+aws_region = "us-east-1"
+
+# API Gateway Configuration (Optional)
+# Leave empty to deploy without API Gateway
+# Set to your actual API Gateway domain when ready
+api_gateway_domain = ""
+api_gateway_stage  = "prod"
+
+# CloudFront Configuration
+# PriceClass_100: US, Canada, Europe
+# PriceClass_200: US, Canada, Europe, Asia, Middle East, Africa
+# PriceClass_All: All edge locations worldwide
+cloudfront_price_class = "PriceClass_100"
+
+# CloudWatch Logs Configuration
+log_retention_days        = 30
+enable_cloudfront_logging = true
+enable_lambda_logging     = false
+log_level                = "INFO"
+
+# Additional Resource Tags
+tags = {
+  Owner       = "Frontend Team"
+  CostCenter  = "Engineering"
+  Application = "Knowledge Base Engine Frontend"
+}
