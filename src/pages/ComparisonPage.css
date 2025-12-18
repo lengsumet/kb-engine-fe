@@ -1,0 +1,9 @@
+.comparison-page {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Ensure full height for child components */
+.comparison-page > * {
+  height: 100%;
+}

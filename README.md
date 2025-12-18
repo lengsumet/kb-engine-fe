@@ -1,1 +1,287 @@
-# kb-engine-fe
+# Knowledge Base Frontend - ระบบฐานความรู้องค์กร
+
+A modern React-based knowledge management system designed for frontline staff at financial institutions. Features hybrid search capabilities combining vector and semantic search to address complex information retrieval challenges.
+
+## 🎯 Problem Statement
+
+This system addresses critical challenges faced by 2,100+ frontline staff:
+
+- **Complex Knowledge Access**: Difficulty accessing diverse information (HR policies, credit policies, IT manuals, operation guides)
+- **Search Limitations**: Exact match limitations, no support for slang/colloquial terms
+- **Format Blindness**: Cannot read embedded data in images/infographics  
+- **Contextual Fragmentation**: Chronological feeds without proper categorization
+- **Change Blindness**: Cannot distinguish between old and new document versions
+
+## 🚀 Features
+
+### Core Functionality
+- **Hybrid Search**: Vector Search (base) + Semantic Search (enhanced)
+- **Multi-format Support**: PDF, images, videos, documents
+- **Thai Language Support**: Full Thai language interface and search
+- **Smart Categorization**: HR, Credit, IT, Operations, Compliance
+- **Version Control**: Track document changes and updates
+- **Quick Access**: Category-based navigation for common tasks
+
+### Search Capabilities
+- **Natural Language Processing**: Supports conversational queries
+- **Contextual Understanding**: Semantic search for related concepts
+- **Slang/Colloquial Support**: Understands informal terminology
+- **Relevance Scoring**: AI-powered result ranking
+- **Advanced Filtering**: Category, file type, date range filters
+- **Timeline Search**: Custom date range selection for specific periods
+- **Year Comparison**: Compare data between different years (e.g., holidays 2568 vs 2569)
+- **Quick Search Actions**: Pre-configured searches for common tasks
+- **File Comparison**: Side-by-side document comparison with highlighted differences
+- **Word-level Highlighting**: Precise highlighting of added, removed, and modified text
+- **AI-Powered Answers**: Intelligent answer generation from document content
+- **Related Questions**: Smart suggestions for follow-up queries
+
+### User Experience
+- **Responsive Design**: Works on desktop, tablet, and mobile
+- **Accessibility**: WCAG compliant interface
+- **Voice Search**: Speech-to-text search capability
+- **Recent Searches**: Quick access to previous queries
+- **Popular Searches**: Trending queries from organization
+
+## 🛠 Technology Stack
+
+- **Frontend**: React 18, React Router
+- **Styling**: Custom CSS with modern design system
+- **Icons**: Lucide React
+- **Testing**: Jest, React Testing Library
+- **Language**: Thai/English bilingual support
+
+## 📦 Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd knowledge-base-frontend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**
+   ```bash
+   npm start
+   ```
+
+4. **Open browser**
+   Navigate to `http://localhost:3000`
+
+## 🧪 Testing
+
+### Run All Tests
+```bash
+npm test
+```
+
+### Test Coverage
+```bash
+npm test -- --coverage
+```
+
+### Test Categories
+
+#### 1. Component Tests
+- **SearchBox Component**: Input handling, filter functionality
+- **SearchResults Component**: Result display, loading states
+- **QuickAccess Component**: Category navigation
+- **Header Component**: Navigation functionality
+
+#### 2. Feature Tests
+- **Hybrid Search**: Vector, semantic, and hybrid result types
+- **Thai Language**: Text display and input handling
+- **Accessibility**: ARIA labels, keyboard navigation
+- **Error Handling**: Empty results, network errors
+
+#### 3. Integration Tests
+- **Search Flow**: End-to-end search functionality
+- **Navigation**: Route handling and page transitions
+- **Filter Integration**: Combined search and filtering
+
+### Manual Testing Scenarios
+
+#### Search Functionality
+1. **Basic Search**
+   - Enter "นโยบายการลา" in search box
+   - Verify results show HR policy documents
+   - Check relevance scores and search type indicators
+
+2. **Filter Testing**
+   - Click filter button to open filter panel
+   - Select "นโยบาย HR" category
+   - Apply date range filter
+   - Verify filtered results
+
+3. **Hybrid Search Validation**
+   - Search for "ขั้นตอนการอนุมัติ"
+   - Verify mix of vector and semantic results
+   - Check relevance scoring accuracy
+
+4. **Timeline Search Testing**
+   - Open filter panel
+   - Select "กำหนดช่วงเวลาเอง" in date range
+   - Set start and end dates
+   - Verify results within specified timeframe
+
+5. **Year Comparison Testing**
+   - Select year 2568 in first dropdown
+   - Select year 2569 in second dropdown
+   - Search for "วันหยุด"
+   - Verify timeline comparison display shows changes between years
+
+6. **Quick Search Actions**
+   - Click "เปรียบเทียบวันหยุด" button
+   - Verify automatic year comparison search
+   - Click "นโยบายใหม่ล่าสุด" button
+   - Verify recent policy updates display
+
+7. **File Comparison Testing**
+   - Click "เปรียบเทียบไฟล์" in navigation or quick actions
+   - Select first file from the list (left side)
+   - Select second file from the list (right side)
+   - Click "เปรียบเทียบไฟล์" button
+   - Verify side-by-side comparison with highlighted differences
+   - Test unified view mode
+   - Verify word-level highlighting for changes
+
+8. **AI Answer Generation Testing**
+   - Search for "นโยบายการลา" or "ขั้นตอนการอนุมัติสินเชื่อ"
+   - Verify AI Answer Box appears above search results
+   - Check answer quality and confidence score
+   - Test feedback buttons (thumbs up/down)
+   - Verify related questions appear below results
+   - Click on related questions to trigger new searches
+
+#### User Interface
+1. **Responsive Design**
+   - Test on mobile (375px width)
+   - Test on tablet (768px width)
+   - Test on desktop (1200px+ width)
+   - Verify layout adapts properly
+
+2. **Navigation**
+   - Click category cards in quick access
+   - Use header navigation menu
+   - Test back button functionality
+   - Verify breadcrumb navigation
+
+3. **Accessibility**
+   - Test keyboard navigation (Tab, Enter, Escape)
+   - Verify screen reader compatibility
+   - Check color contrast ratios
+   - Test with high contrast mode
+
+#### Error Scenarios
+1. **No Results**
+   - Search for "xyz123nonexistent"
+   - Verify helpful error message
+   - Check search suggestions display
+
+2. **Network Issues**
+   - Simulate slow network
+   - Verify loading states
+   - Test timeout handling
+
+### Performance Testing
+
+#### Load Testing
+1. **Large Result Sets**
+   - Search for broad terms (e.g., "นโยบาย")
+   - Verify smooth scrolling with 100+ results
+   - Check memory usage
+
+2. **Search Speed**
+   - Measure search response time
+   - Target: < 2 seconds for most queries
+   - Test with various query lengths
+
+#### Usability Testing
+1. **Task Completion**
+   - Find specific HR policy (target: < 30 seconds)
+   - Locate IT troubleshooting guide
+   - Access recent policy updates
+
+2. **User Satisfaction**
+   - Intuitive navigation
+   - Clear result presentation
+   - Helpful error messages
+
+## 🎨 Design Features
+
+### Visual Design
+- **Modern Interface**: Clean, professional appearance
+- **Thai Typography**: Sarabun font for optimal Thai text rendering
+- **Color System**: Accessible color palette with proper contrast
+- **Iconography**: Consistent Lucide React icons
+
+### Interaction Design
+- **Smooth Animations**: Subtle transitions and hover effects
+- **Loading States**: Clear feedback during operations
+- **Progressive Disclosure**: Expandable filters and options
+- **Touch-Friendly**: Optimized for mobile interaction
+
+## 🔧 Configuration
+
+### Environment Variables
+Create `.env` file for configuration:
+```
+REACT_APP_API_BASE_URL=http://localhost:8000
+REACT_APP_SEARCH_TIMEOUT=5000
+REACT_APP_RESULTS_PER_PAGE=20
+```
+
+### Search Configuration
+- **Vector Search Weight**: 0.6
+- **Semantic Search Weight**: 0.4
+- **Minimum Relevance Score**: 0.3
+- **Max Results**: 50 per query
+
+## 📱 Browser Support
+
+- **Chrome**: 90+
+- **Firefox**: 88+
+- **Safari**: 14+
+- **Edge**: 90+
+- **Mobile Safari**: iOS 14+
+- **Chrome Mobile**: Android 8+
+
+## 🚀 Deployment
+
+### Build for Production
+```bash
+npm run build
+```
+
+### Deploy to Server
+```bash
+# Example deployment to nginx
+cp -r build/* /var/www/html/
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/new-feature`)
+3. Commit changes (`git commit -am 'Add new feature'`)
+4. Push to branch (`git push origin feature/new-feature`)
+5. Create Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🆘 Support
+
+For technical support or questions:
+- Create an issue in the repository
+- Contact the development team
+- Check the documentation wiki
+
+---
+
+**Built with ❤️ for frontline staff efficiency and productivity**

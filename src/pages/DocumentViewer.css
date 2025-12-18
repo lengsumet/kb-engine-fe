@@ -1,0 +1,258 @@
+.document-viewer {
+  min-height: calc(100vh - 4rem);
+  background: #f8fafc;
+}
+
+.document-loading,
+.document-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  min-height: 50vh;
+}
+
+.document-loading .loading-spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.document-error h2 {
+  margin-bottom: 1rem;
+  color: #1e293b;
+}
+
+.document-error p {
+  color: #64748b;
+  margin-bottom: 2rem;
+}
+
+.document-header {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1.5rem 0;
+}
+
+.header-nav {
+  margin-bottom: 1.5rem;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.back-btn:hover {
+  color: #3b82f6;
+}
+
+.document-meta {
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.document-meta h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.meta-info {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.document-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: #e2e8f0;
+  color: #475569;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.document-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #64748b;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.action-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.action-btn.primary {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.action-btn.primary:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.document-body {
+  padding: 2rem 0;
+}
+
+.document-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.document-content {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.content-wrapper {
+  padding: 2rem;
+}
+
+.document-text {
+  font-family: 'Sarabun', sans-serif;
+  line-height: 1.8;
+  color: #374151;
+  white-space: pre-wrap;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.document-sidebar {
+  position: sticky;
+  top: 2rem;
+}
+
+.sidebar-section {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-section h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.related-documents {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.related-doc {
+  display: block;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  color: #374151;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.related-doc:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #3b82f6;
+}
+
+@media (max-width: 1024px) {
+  .document-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .document-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .document-header {
+    padding: 1rem 0;
+  }
+  
+  .document-meta h1 {
+    font-size: 1.5rem;
+  }
+  
+  .meta-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .document-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .action-btn {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .content-wrapper {
+    padding: 1.5rem;
+  }
+  
+  .document-text {
+    font-size: 0.875rem;
+  }
+}
