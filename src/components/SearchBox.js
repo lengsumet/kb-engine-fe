@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Mic, Filter, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import './SearchBox.css';
 
 const SearchBox = ({ onSearch, onFilterChange, filters = {} }) => {
@@ -41,30 +41,21 @@ const SearchBox = ({ onSearch, onFilterChange, filters = {} }) => {
   return (
     <div className="search-box">
       <form onSubmit={handleSearch} className="search-form">
-        <div className="search-input-container">
-          <Search className="search-icon" size={20} />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="ค้นหาข้อมูล เอกสาร หรือคำแนะนำ... (รองรับภาษาพูดและคำศัพท์เฉพาะ)"
-            className="search-input"
-          />
-          <button type="button" className="voice-search-btn" title="ค้นหาด้วยเสียง">
-            <Mic size={18} />
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowFilters(!showFilters)}
-            className={`filter-btn ${showFilters ? 'active' : ''}`}
-            title="ตัวกรอง"
-          >
-            <Filter size={18} />
+        <div className="search-row">
+          <div className="search-input-container">
+            <Search className="search-icon" size={20} />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="ค้นหาข้อมูล เอกสาร หรือคำแนะนำ... (รองรับภาษาพูดและคำศัพท์เฉพาะ)"
+              className="search-input"
+            />
+          </div>
+          <button type="submit" className="search-submit-btn">
+            ค้นหา
           </button>
         </div>
-        <button type="submit" className="search-submit-btn">
-          ค้นหา
-        </button>
       </form>
 
       {showFilters && (

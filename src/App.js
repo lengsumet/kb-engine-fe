@@ -6,6 +6,7 @@ import DocumentViewer from './pages/DocumentViewer';
 import CategoryBrowser from './pages/CategoryBrowser';
 import RecentUpdates from './pages/RecentUpdates';
 import ComparisonPage from './pages/ComparisonPage';
+import Chatbot from './components/Chatbot/Chatbot';
 import './App.css';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <Route path="/compare" element={<ComparisonPage />} />
           </Routes>
         </main>
+        <Chatbot apiEndpoint="/api/chat" />
       </div>
     </Router>
   );
