@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Mic, Filter, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import './SearchBox.css';
 
 const SearchBox = ({ 
