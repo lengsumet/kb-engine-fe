@@ -2,6 +2,31 @@
   margin-bottom: 3rem;
 }
 
+/* Sidebar-specific styles */
+.search-sidebar .quick-access {
+  margin-bottom: 0;
+}
+
+.search-sidebar .section-header {
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.search-sidebar .section-header h2 {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.search-sidebar .section-header p {
+  font-size: 0.875rem;
+}
+
+.search-sidebar .quick-searches h3,
+.search-sidebar .categories-section h3 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
 .section-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -39,6 +64,12 @@
   margin-bottom: 2rem;
 }
 
+.search-sidebar .quick-search-grid {
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
 .quick-search-btn {
   display: flex;
   align-items: center;
@@ -51,6 +82,11 @@
   transition: all 0.2s ease;
   text-align: left;
   width: 100%;
+}
+
+.search-sidebar .quick-search-btn {
+  padding: 0.75rem;
+  gap: 0.75rem;
 }
 
 .quick-search-btn:hover {
@@ -91,6 +127,13 @@
   margin: 0 auto;
 }
 
+.search-sidebar .categories-grid {
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  max-width: none;
+  margin: 0;
+}
+
 .category-card {
   display: flex;
   align-items: flex-start;
@@ -101,6 +144,11 @@
   text-decoration: none;
   transition: all 0.2s ease;
   background: white;
+}
+
+.search-sidebar .category-card {
+  padding: 0.75rem;
+  gap: 0.75rem;
 }
 
 .category-card:hover {

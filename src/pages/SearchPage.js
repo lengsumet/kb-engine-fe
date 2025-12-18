@@ -1,30 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import SearchBox from '../components/SearchBox';
 import SearchResults from '../components/SearchResults';
 import QuickAccess from '../components/QuickAccess';
 import RecentSearches from '../components/RecentSearches';
+import PopularContent from '../components/PopularContent';
+
+import searchService from '../services/searchService';
+import { LayoutGrid, List } from 'lucide-react';
 import './SearchPage.css';
 
-const SearchPage = () => {
+const SearchPage = ({ onOpenChat }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({});
 
-  // Mock search function - replace with actual API call
+  
+  // Simple view options
+  const [viewMode] = useState('comfortable'); // compact, comfortable, spacious
+  const [layoutMode, setLayoutMode] = useState('list'); // list, grid, wide
+  const [showSidebar] = useState(true);
+
+  // Search function using the new API
   const handleSearch = async (query, searchFilters = {}) => {
+    if (loading || !query || query.trim() === '') return;
+
     setLoading(true);
     setSearchQuery(query);
     setHasSearched(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
       // Check if this is a year comparison search
       if (searchFilters.compareYear1 && searchFilters.compareYear2) {
-        // Mock comparison data
+        // Mock comparison data (keep existing comparison logic)
         const mockComparisonData = [
           {
             title: 'วันหยุดปีใหม่',
@@ -82,57 +91,34 @@ const SearchPage = () => {
         
         setSearchResults(mockComparisonData);
       } else {
-        // Regular search results
-        const mockResults = [
-          {
-            id: 1,
-            title: 'นโยบายการลาพักร้อนประจำปี 2024',
-            content: 'นโยบายการลาพักร้อนสำหรับพนักงานทุกระดับ รวมถึงเงื่อนไขและขั้นตอนการขออนุมัติ',
-            category: 'hr',
-            fileType: 'pdf',
-            lastUpdated: '2024-01-15',
-            relevanceScore: 0.95,
-            searchType: 'semantic',
-            highlights: ['นโยบายการลา', 'พักร้อน', 'พนักงาน']
-          },
-          {
-            id: 2,
-            title: 'คู่มือการใช้งานระบบสินเชื่อ V2.1',
-            content: 'คู่มือการใช้งานระบบสินเชื่อใหม่ รวมถึงขั้นตอนการอนุมัติและการตรวจสอบเครดิต',
-            category: 'credit',
-            fileType: 'pdf',
-            lastUpdated: '2024-01-10',
-            relevanceScore: 0.88,
-            searchType: 'vector',
-            highlights: ['ระบบสินเชื่อ', 'อนุมัติ', 'เครดิต']
-          },
-          {
-            id: 3,
-            title: 'วิธีการแก้ไขปัญหาระบบ IT เบื้องต้น',
-            content: 'คู่มือการแก้ไขปัญหาระบบคอมพิวเตอร์และเครือข่ายเบื้องต้นสำหรับพนักงาน',
-            category: 'it',
-            fileType: 'document',
-            lastUpdated: '2024-01-08',
-            relevanceScore: 0.82,
-            searchType: 'hybrid',
-            highlights: ['แก้ไขปัญหา', 'ระบบ IT', 'คอมพิวเตอร์']
-          }
-        ];
-
-        // Filter results based on search filters
-        let filteredResults = mockResults;
-        if (searchFilters.category) {
-          filteredResults = filteredResults.filter(r => r.category === searchFilters.category);
+        // Use the new search API
+        const results = await searchService.performSearch(query);
+        
+        // Filter results based on search filters if needed
+        let filteredResults = results;
+        if (searchFilters.category && !results[0]?.isError) {
+          filteredResults = results.filter(r => r.category === searchFilters.category);
         }
-        if (searchFilters.fileType) {
-          filteredResults = filteredResults.filter(r => r.fileType === searchFilters.fileType);
+        if (searchFilters.fileType && !results[0]?.isError) {
+          filteredResults = results.filter(r => r.fileType === searchFilters.fileType);
         }
 
         setSearchResults(filteredResults);
       }
     } catch (error) {
       console.error('Search error:', error);
-      setSearchResults([]);
+      setSearchResults([{
+        id: Date.now(),
+        title: 'เกิดข้อผิดพลาดในการค้นหา',
+        content: 'ไม่สามารถค้นหาข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง',
+        category: 'error',
+        fileType: 'error',
+        lastUpdated: new Date().toLocaleDateString('th-TH'),
+        relevanceScore: 0,
+        searchType: 'error',
+        highlights: [],
+        isError: true
+      }]);
     } finally {
       setLoading(false);
     }
@@ -140,51 +126,120 @@ const SearchPage = () => {
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
-    if (hasSearched && searchQuery) {
+    if (hasSearched && searchQuery && !loading) {
       handleSearch(searchQuery, newFilters);
     }
   };
 
   const handleQuickSearch = (query, quickFilters) => {
-    setFilters(quickFilters);
-    handleSearch(query, quickFilters);
+    setFilters(quickFilters || {});
+    handleSearch(query, quickFilters || {});
+  };
+
+  const handlePopularContentClick = (content) => {
+    if (content.title) {
+      handleSearch(content.title);
+    }
   };
 
   return (
-    <div className="search-page">
-      <div className="search-hero">
+    <div className={`search-page view-${viewMode} layout-${layoutMode} with-sidebar`}>
+      
+      {/* Simple Search Header */}
+      <div className="search-header">
         <div className="container">
-          <div className="hero-content">
-            <h1>ค้นหาข้อมูลและเอกสาร</h1>
-            <p>ระบบค้นหาอัจฉริยะที่รองรับภาษาธรรมชาติและคำศัพท์เฉพาะองค์กร</p>
+          <div className="search-intro">
+            <h1>ค้นหา</h1>
           </div>
           
-          <SearchBox 
-            onSearch={handleSearch}
-            onFilterChange={handleFilterChange}
-            filters={filters}
-          />
+          {/* Search Box */}
+          <div className="search-box-container">
+            <SearchBox 
+              onSearch={handleSearch}
+              onFilterChange={handleFilterChange}
+              filters={filters}
+            />
+          </div>
         </div>
       </div>
 
-      <div className="search-content">
+
+
+      {/* Main Content */}
+      <div className="search-main">
         <div className="container">
-          {!hasSearched ? (
-            <div className="search-landing">
-              <QuickAccess onQuickSearch={handleQuickSearch} />
-              <RecentSearches onSearchSelect={handleSearch} />
+          <div className="search-layout">
+            
+            {/* Content Area */}
+            <div className="search-content">
+              {!hasSearched ? (
+                <div className="search-welcome">
+                  <div className="welcome-content">
+                    <h2>เริ่มต้นการค้นหา</h2>
+                    <p>พิมพ์คำค้นหาในช่องด้านบนเพื่อเริ่มค้นหาข้อมูล</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="results-container">
+                  {/* Layout Controls - Only show when there are results */}
+                  {searchResults.length > 0 && !loading && (
+                    <div className="results-controls">
+                      <div className="layout-controls">
+                        <button 
+                          className={layoutMode === 'list' ? 'active' : ''}
+                          onClick={() => setLayoutMode('list')}
+                          title="รายการ"
+                        >
+                          <List size={16} />
+                          <span>รายการ</span>
+                        </button>
+                        <button 
+                          className={layoutMode === 'grid' ? 'active' : ''}
+                          onClick={() => setLayoutMode('grid')}
+                          title="ตาราง"
+                        >
+                          <LayoutGrid size={16} />
+                          <span>ตาราง</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <SearchResults 
+                    results={searchResults}
+                    loading={loading}
+                    query={searchQuery}
+                    filters={filters}
+                    viewMode={viewMode}
+                    layoutMode={layoutMode}
+                    onNewSearch={(newQuery) => handleSearch(newQuery, filters)}
+                  />
+                </div>
+              )}
             </div>
-          ) : (
-            <SearchResults 
-              results={searchResults}
-              loading={loading}
-              query={searchQuery}
-              filters={filters}
-              onNewSearch={(newQuery) => handleSearch(newQuery, filters)}
-            />
-          )}
+
+            {/* Always Show Sidebar - Moved under search-content */}
+            <div className="search-sidebar">
+              <div className="sidebar-section">
+                <QuickAccess onQuickSearch={handleQuickSearch} />
+              </div>
+              
+              <div className="sidebar-section">
+                <RecentSearches onSearchSelect={handleSearch} />
+              </div>
+              
+              <div className="sidebar-section">
+                <PopularContent 
+                  timeRange="7days"
+                  onContentClick={handlePopularContentClick}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+
     </div>
   );
 };

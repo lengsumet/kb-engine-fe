@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Search API</title>
+</head>
+<body>
+    <h1>Test Search API</h1>
+    <input type="text" id="question" placeholder="Enter your question" value="hello">
+    <button onclick="testSearch()">Test Search</button>
+    <div id="result"></div>
+
+    <script>
+        async function testSearch() {
+            const question = document.getElementById('question').value;
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                resultDiv.innerHTML = 'Loading...';
+                
+                const response = await fetch('http://localhost:3001/api/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <h3>Success!</h3>
+                        <p><strong>Question:</strong> ${question}</p>
+                        <p><strong>Answer:</strong> ${data.answer || JSON.stringify(data)}</p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <h3>API Error (${response.status})</h3>
+                        <p>${JSON.stringify(data, null, 2)}</p>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>Error</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

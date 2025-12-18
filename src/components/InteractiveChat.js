@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Send, X, Minimize2, Maximize2, Bot, User, Sparkles } from 'lucide-react';
-import { generateAIAnswer, sendAIFeedback } from '../services/aiService';
+import { Send, X, Minimize2, Maximize2, Bot, User, Sparkles, RefreshCw, Copy, Trash2 } from 'lucide-react';
+import ChatIcon from './ChatIcon';
+import chatService from '../services/chatService';
 import './InteractiveChat.css';
 
 const InteractiveChat = ({ isOpen, onToggle, initialQuery = '' }) => {
@@ -8,28 +9,40 @@ const InteractiveChat = ({ isOpen, onToggle, initialQuery = '' }) => {
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [suggestedQuestions, setSuggestedQuestions] = useState([]);
+  const [apiStatus, setApiStatus] = useState('unknown');
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
   useEffect(() => {
-    // Initialize with welcome message
+    // Initialize with welcome message and check API status
     if (messages.length === 0) {
-      setMessages([
+      const welcomeMessage = chatService.formatChatMessage(
+        'สวัสดีครับ! ผมเป็น AI Assistant ที่จะช่วยคุณค้นหาข้อมูลและตอบคำถามต่างๆ\n\nคุณสามารถถามเกี่ยวกับ:\n• นโยบายบริษัท\n• ขั้นตอนการทำงาน\n• คู่มือการใช้งาน\n• กฎระเบียบต่างๆ\n\nมีอะไรให้ช่วยไหมครับ?',
+        'bot',
         {
           id: 1,
-          type: 'bot',
-          content: 'สวัสดีครับ! ผมเป็น AI Assistant ที่จะช่วยคุณค้นหาข้อมูลและตอบคำถามต่างๆ\n\nคุณสามารถถามเกี่ยวกับ:\n• นโยบายบริษัท\n• ขั้นตอนการทำงาน\n• คู่มือการใช้งาน\n• กฎระเบียบต่างๆ\n\nมีอะไรให้ช่วยไหมครับ?',
-          timestamp: new Date(),
-          suggestions: [
-            'นโยบายการลาพักร้อน',
-            'ขั้นตอนการอนุมัติสินเชื่อ',
-            'วิธีแก้ไขปัญหาระบบ IT',
-            'วันหยุดประจำปี 2024'
-          ]
+          timestamp: new Date().toISOString(),
+          isWelcome: true
         }
-      ]);
+      );
+      
+      setMessages([welcomeMessage]);
+      setSuggestedQuestions(chatService.getSuggestedQuestions().slice(0, 4));
+      
+      // Check API health
+      checkApiHealth();
     }
   }, [messages.length]);
+
+  const checkApiHealth = async () => {
+    try {
+      const isHealthy = await chatService.healthCheck();
+      setApiStatus(isHealthy ? 'connected' : 'disconnected');
+    } catch (error) {
+      setApiStatus('disconnected');
+    }
+  };
 
   useEffect(() => {
     // Handle initial query from search
@@ -56,45 +69,42 @@ const InteractiveChat = ({ isOpen, onToggle, initialQuery = '' }) => {
   const handleSendMessage = async (messageText = inputMessage) => {
     if (!messageText.trim()) return;
 
-    const userMessage = {
-      id: Date.now(),
-      type: 'user',
-      content: messageText.trim(),
-      timestamp: new Date()
-    };
+    const userMessage = chatService.formatChatMessage(messageText.trim(), 'user', {
+      id: Date.now()
+    });
 
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setIsTyping(true);
 
     try {
-      // Simulate typing delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Generate AI response
-      const aiResponse = await generateAIResponse(messageText.trim());
+      // Call the chat API using the new chatService
+      const response = await chatService.sendMessage(messageText.trim(), true);
       
-      const botMessage = {
-        id: Date.now() + 1,
-        type: 'bot',
-        content: aiResponse.content,
-        timestamp: new Date(),
-        confidence: aiResponse.confidence,
-        sources: aiResponse.sources,
-        suggestions: aiResponse.suggestions
-      };
+      const botMessage = chatService.formatChatMessage(response.answer, 'bot', {
+        id: response.messageId,
+        confidence: response.confidence,
+        sources: response.sources,
+        timestamp: response.timestamp
+      });
 
       setMessages(prev => [...prev, botMessage]);
+
+      // Generate follow-up questions
+      const followUps = chatService.generateFollowUpQuestions(response);
+      setSuggestedQuestions(followUps);
+
     } catch (error) {
       console.error('Error generating AI response:', error);
       
-      const errorMessage = {
-        id: Date.now() + 1,
-        type: 'bot',
-        content: 'ขออภัยครับ เกิดข้อผิดพลาดในการประมวลผล กรุณาลองใหม่อีกครั้ง',
-        timestamp: new Date(),
-        isError: true
-      };
+      const errorMessage = chatService.formatChatMessage(
+        `ขออภัยครับ เกิดข้อผิดพลาดในการประมวลผล: ${error.message}\n\nกรุณาลองใหม่อีกครั้ง หรือติดต่อผู้ดูแลระบบ`,
+        'bot',
+        {
+          id: Date.now() + 1,
+          isError: true
+        }
+      );
 
       setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -102,70 +112,25 @@ const InteractiveChat = ({ isOpen, onToggle, initialQuery = '' }) => {
     }
   };
 
-  const generateAIResponse = async (query) => {
-    try {
-      // Try to use actual AI service
-      const response = await generateAIAnswer(query, []);
-      return {
-        content: response.text,
-        confidence: response.confidence,
-        sources: response.sources,
-        suggestions: generateFollowUpQuestions(query)
-      };
-    } catch (error) {
-      // Fallback to mock responses
-      return generateMockResponse(query);
+  const handleClearChat = () => {
+    if (window.confirm('คุณต้องการล้างประวัติการสนทนาทั้งหมดหรือไม่?')) {
+      chatService.clearHistory();
+      const welcomeMessage = chatService.formatChatMessage(
+        'ประวัติการสนทนาถูกล้างเรียบร้อยแล้ว\n\nคุณสามารถเริ่มถามคำถามใหม่ได้เลย',
+        'bot',
+        {
+          id: 1,
+          isWelcome: true
+        }
+      );
+      setMessages([welcomeMessage]);
+      setSuggestedQuestions(chatService.getSuggestedQuestions().slice(0, 4));
     }
   };
 
-  const generateMockResponse = (query) => {
-    const lowerQuery = query.toLowerCase();
-    
-    if (lowerQuery.includes('สวัสดี') || lowerQuery.includes('หวัดดี')) {
-      return {
-        content: 'สวัสดีครับ! ยินดีที่ได้รู้จัก มีอะไรให้ช่วยเหลือไหมครับ?',
-        confidence: 0.95,
-        suggestions: ['นโยบายการลา', 'ขั้นตอนการอนุมัติ', 'คู่มือการใช้งาน']
-      };
-    } else if (lowerQuery.includes('ลา') || lowerQuery.includes('พักร้อน')) {
-      return {
-        content: 'เรื่องการลาพักร้อนนะครับ ตามนโยบายบริษัท:\n\n📋 **สิทธิการลา:**\n• ทำงานครบ 1 ปี: 6 วัน\n• ทำงานครบ 3 ปี: 10 วัน\n• ทำงานครบ 5 ปี: 15 วัน\n\n📝 **ขั้นตอน:**\n1. ยื่นคำขอล่วงหน้า 7 วัน\n2. กรอกแบบฟอร์มคำขอ\n3. รอการอนุมัติจากหัวหน้า\n\nต้องการรายละเอียดเพิ่มเติมไหมครับ?',
-        confidence: 0.92,
-        suggestions: ['แบบฟอร์มคำขอลา', 'การลาป่วย', 'วันลาสะสม']
-      };
-    } else if (lowerQuery.includes('สินเชื่อ') || lowerQuery.includes('อนุมัติ')) {
-      return {
-        content: '💳 **ขั้นตอนการอนุมัติสินเชื่อ:**\n\n1️⃣ **ตรวจสอบเอกสาร**\n• เอกสารประกอบการพิจารณา\n• ยืนยันตัวตนลูกค้า\n\n2️⃣ **ประเมินความเสี่ยง**\n• วิเคราะห์รายได้-หนี้สิน\n• ตรวจสอบเครดิตประวัติ\n\n3️⃣ **การอนุมัติ**\n• < 500K: หัวหน้าสาขา\n• 500K-2M: ผู้จัดการภูมิภาค\n• > 2M: คณะกรรมการ\n\n⏱️ **ระยะเวลา:** 3-5 วันทำการ',
-        confidence: 0.89,
-        suggestions: ['เอกสารประกอบ', 'อัตราดอกเบี้ย', 'เงื่อนไขการอนุมัติ']
-      };
-    } else if (lowerQuery.includes('it') || lowerQuery.includes('ระบบ') || lowerQuery.includes('คอมพิวเตอร์')) {
-      return {
-        content: '💻 **การแก้ไขปัญหาระบบ IT:**\n\n🔧 **ปัญหาที่พบบ่อย:**\n• ไม่สามารถเข้าระบบ → รีเซ็ตรหัsผ่าน\n• ระบบช้า → ปิดโปรแกรมที่ไม่ใช้\n• เครือข่ายขัดข้อง → ตรวจสอบสาย LAN\n\n📞 **ติดต่อ IT Support:**\n• โทร: ext. 1234\n• Email: itsupport@company.com\n• Line: @itsupport\n\nต้องการความช่วยเหลือเรื่องอะไรเฉพาะเจาะจงไหมครับ?',
-        confidence: 0.87,
-        suggestions: ['รีเซ็ตรหัสผ่าน', 'ปัญหาเครือข่าย', 'ติดต่อ IT Support']
-      };
-    } else {
-      return {
-        content: `ขอบคุณสำหรับคำถาม "${query}" ครับ\n\nผมจะช่วยค้นหาข้อมูลที่เกี่ยวข้องให้คุณ กรุณารอสักครู่นะครับ...\n\nหรือคุณสามารถเลือกหัวข้อที่สนใจจากด้านล่างได้เลยครับ`,
-        confidence: 0.75,
-        suggestions: ['นโยบาย HR', 'ขั้นตอนการทำงาน', 'คู่มือการใช้งาน', 'กฎระเบียบ']
-      };
-    }
-  };
-
-  const generateFollowUpQuestions = (query) => {
-    const lowerQuery = query.toLowerCase();
-    
-    if (lowerQuery.includes('ลา')) {
-      return ['แบบฟอร์มคำขอลา', 'การลาป่วย', 'วันลาสะสม'];
-    } else if (lowerQuery.includes('สินเชื่อ')) {
-      return ['เอกสารประกอบ', 'อัตราดอกเบี้ย', 'เงื่อนไขการอนุมัติ'];
-    } else if (lowerQuery.includes('it')) {
-      return ['รีเซ็ตรหัสผ่าน', 'ปัญหาเครือข่าย', 'ติดต่อ IT Support'];
-    } else {
-      return ['นโยบาย HR', 'ขั้นตอนการทำงาน', 'คู่มือการใช้งาน'];
-    }
+  const handleCopyMessage = (content) => {
+    navigator.clipboard.writeText(content);
+    // Could add a toast notification here
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -198,7 +163,7 @@ const InteractiveChat = ({ isOpen, onToggle, initialQuery = '' }) => {
   if (!isOpen) {
     return (
       <button onClick={onToggle} className="chat-toggle-btn">
-        <MessageCircle size={24} />
+        <ChatIcon size={28} />
         <span className="chat-badge">AI</span>
       </button>
     );
@@ -210,16 +175,27 @@ const InteractiveChat = ({ isOpen, onToggle, initialQuery = '' }) => {
         <div className="chat-title">
           <Bot size={20} />
           <span>AI Assistant</span>
-          <div className="online-indicator"></div>
+          <div className={`api-status ${apiStatus}`}>
+            {apiStatus === 'connected' ? 'เชื่อมต่อแล้ว' : 
+             apiStatus === 'disconnected' ? 'ไม่เชื่อมต่อ' : 'กำลังตรวจสอบ'}
+          </div>
         </div>
         <div className="chat-controls">
           <button 
+            onClick={handleClearChat}
+            className="chat-control-btn"
+            title="ล้างประวัติ"
+          >
+            <Trash2 size={16} />
+          </button>
+          <button 
             onClick={() => setIsMinimized(!isMinimized)}
             className="chat-control-btn"
+            title={isMinimized ? 'ขยาย' : 'ย่อ'}
           >
             {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
           </button>
-          <button onClick={onToggle} className="chat-control-btn">
+          <button onClick={onToggle} className="chat-control-btn" title="ปิด">
             <X size={16} />
           </button>
         </div>
@@ -229,7 +205,7 @@ const InteractiveChat = ({ isOpen, onToggle, initialQuery = '' }) => {
         <>
           <div className="chat-messages">
             {messages.map((message) => (
-              <div key={message.id} className={`message ${message.type}`}>
+              <div key={message.id} className={`message ${message.type} ${message.isError ? 'error' : ''} ${message.isWelcome ? 'welcome' : ''}`}>
                 <div className="message-avatar">
                   {message.type === 'bot' ? <Bot size={16} /> : <User size={16} />}
                 </div>
@@ -242,29 +218,49 @@ const InteractiveChat = ({ isOpen, onToggle, initialQuery = '' }) => {
                         <span>ความมั่นใจ: {Math.round(message.confidence * 100)}%</span>
                       </div>
                     )}
+                    {message.sources && message.sources.length > 0 && (
+                      <div className="message-sources">
+                        <small>แหล่งข้อมูล: {message.sources.join(', ')}</small>
+                      </div>
+                    )}
                   </div>
-                  <div className="message-time">
-                    {message.timestamp.toLocaleTimeString('th-TH', { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
+                  <div className="message-actions">
+                    <button 
+                      onClick={() => handleCopyMessage(message.content)}
+                      className="message-action-btn"
+                      title="คัดลอก"
+                    >
+                      <Copy size={12} />
+                    </button>
+                    <span className="message-time">
+                      {new Date(message.timestamp).toLocaleTimeString('th-TH', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </span>
                   </div>
-                  {message.suggestions && message.suggestions.length > 0 && (
-                    <div className="message-suggestions">
-                      {message.suggestions.map((suggestion, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleSuggestionClick(suggestion)}
-                          className="suggestion-chip"
-                        >
-                          {suggestion}
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
             ))}
+
+            {/* Show suggested questions after the last bot message */}
+            {suggestedQuestions.length > 0 && !isTyping && (
+              <div className="suggested-questions-container">
+                <div className="suggestions-header">คำถามที่แนะนำ:</div>
+                <div className="suggestions-grid">
+                  {suggestedQuestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className="suggestion-chip"
+                      disabled={isTyping}
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             
             {isTyping && (
               <div className="message bot">

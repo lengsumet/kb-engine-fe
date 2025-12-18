@@ -1,4 +1,4 @@
-# Knowledge Base Frontend - ระบบฐานความรู้องค์กร
+# เงินเทอร์โบ - ระบบฐานความรู้องค์กรอัจฉริยะ
 
 A modern React-based knowledge management system designed for frontline staff at financial institutions. Features hybrid search capabilities combining vector and semantic search to address complex information retrieval challenges.
 

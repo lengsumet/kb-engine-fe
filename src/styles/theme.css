@@ -1,19 +1,44 @@
-/* Custom Theme - Blue & Pink Palette */
+/* Blue & Pink Theme - Inspired by Logo */
 :root {
-  /* Primary Colors - Blue & Pink Theme */
-  --color-primary-light: #dbeafe;
-  --color-primary: #2563eb;
-  --color-primary-dark: #1d4ed8;
-  --color-primary-darker: #1e40af;
+  /* Primary Blue Colors - Matching Logo */
+  --color-blue-50: #f0f7ff;
+  --color-blue-100: #e0efff;
+  --color-blue-200: #bae0ff;
+  --color-blue-300: #7cc7ff;
+  --color-blue-400: #36a9ff;
+  --color-blue-500: #0084ff;
+  --color-blue-600: #0066cc;
+  --color-blue-700: #0052a3;
+  --color-blue-800: #003d7a;
+  --color-blue-900: #002952;
   
-  --color-secondary-light: #fce7f3;
-  --color-secondary: #f472b6;
-  --color-secondary-dark: #ec4899;
-  --color-secondary-darker: #db2777;
+  /* Primary Pink Colors - Matching Logo */
+  --color-pink-50: #fff0f7;
+  --color-pink-100: #ffe0ef;
+  --color-pink-200: #ffbae0;
+  --color-pink-300: #ff7cc7;
+  --color-pink-400: #ff36a9;
+  --color-pink-500: #ff0084;
+  --color-pink-600: #e6006b;
+  --color-pink-700: #cc0052;
+  --color-pink-800: #b30039;
+  --color-pink-900: #990020;
+  
+  /* Theme Colors */
+  --color-primary: var(--color-blue-600);
+  --color-primary-light: var(--color-blue-100);
+  --color-primary-dark: var(--color-blue-700);
+  --color-primary-darker: var(--color-blue-800);
+  
+  --color-secondary: var(--color-pink-500);
+  --color-secondary-light: var(--color-pink-100);
+  --color-secondary-dark: var(--color-pink-600);
+  --color-secondary-darker: var(--color-pink-700);
   
   /* Background Colors */
   --color-bg-primary: #f8fafc;
-  --color-bg-secondary: #f1f5f9;
+  --color-bg-secondary: var(--color-blue-50);
+  --color-bg-accent: linear-gradient(135deg, var(--color-blue-50), var(--color-pink-50));
   
   /* Neutral Colors */
   --color-white: #ffffff;
@@ -30,9 +55,13 @@
   
   /* Semantic Colors */
   --color-success: #10b981;
+  --color-success-light: #d1fae5;
   --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
   --color-error: #ef4444;
+  --color-error-light: #fee2e2;
   --color-info: var(--color-primary);
+  --color-info-light: var(--color-primary-light);
   
   /* Additional Colors */
   --color-red-50: #fef2f2;

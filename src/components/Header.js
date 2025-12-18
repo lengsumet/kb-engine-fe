@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Search, BookOpen, Clock, Menu, GitCompare } from 'lucide-react';
 import './Header.css';
 
-const Header = () => {
+const Header = ({ onOpenChat }) => {
   const location = useLocation();
 
   const navItems = [
@@ -16,15 +16,15 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-container">
-        <div className="header-brand">
+        <Link to="/" className="header-brand">
           <div className="brand-logo">
             <BookOpen size={32} />
           </div>
           <div className="brand-text">
-            <h1>Knowledge Base</h1>
+            <h1>เงินเทอร์โบ</h1>
             <span>ระบบฐานความรู้องค์กร</span>
           </div>
-        </div>
+        </Link>
 
         <nav className="header-nav">
           {navItems.map(({ path, icon: Icon, label, id }) => (

@@ -1,12 +1,18 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Image, Video, File, Clock, Star, Zap } from 'lucide-react';
 import TimelineComparison from './TimelineComparison';
-import AIAnswerBox from './AIAnswerBox';
 import RelatedQuestions from './RelatedQuestions';
 import './SearchResults.css';
 
-const SearchResults = ({ results, loading, query, filters, onNewSearch }) => {
+const SearchResults = ({ 
+  results, 
+  loading, 
+  query, 
+  filters, 
+  viewMode = 'comfortable',
+  layoutMode = 'list',
+  onNewSearch 
+}) => {
   const getFileIcon = (fileType) => {
     switch (fileType) {
       case 'pdf': return <FileText size={20} />;
@@ -61,44 +67,6 @@ const SearchResults = ({ results, loading, query, filters, onNewSearch }) => {
 
   return (
     <div className="search-results">
-      <div className="results-header">
-        <div className="results-info">
-          <h2>{isYearComparison ? 'การเปรียบเทียบข้อมูลระหว่างปี' : 'ผลการค้นหา'}</h2>
-          <p>
-            {isYearComparison 
-              ? `เปรียบเทียบข้อมูลระหว่างปี ${filters.compareYear1} และ ${filters.compareYear2}`
-              : `พบ ${results.length} รายการสำหรับ "${query}"`
-            }
-          </p>
-        </div>
-        
-        {results.length > 0 && (
-          <div className="search-stats">
-            <div className="stat-item">
-              <span className="stat-label">Vector Search:</span>
-              <span className="stat-value">{results.filter(r => r.searchType === 'vector').length}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Semantic Search:</span>
-              <span className="stat-value">{results.filter(r => r.searchType === 'semantic').length}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Hybrid:</span>
-              <span className="stat-value">{results.filter(r => r.searchType === 'hybrid').length}</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* AI Answer Box - only show for regular searches with results */}
-      {!isYearComparison && !loading && results.length > 0 && query && (
-        <AIAnswerBox 
-          query={query}
-          searchResults={results}
-          loading={loading}
-        />
-      )}
-
       {isYearComparison ? (
         <TimelineComparison 
           year1={filters.compareYear1}
@@ -124,7 +92,7 @@ const SearchResults = ({ results, loading, query, filters, onNewSearch }) => {
           </div>
         </div>
       ) : (
-        <div className="results-list">
+        <div className={`results-list view-${viewMode} layout-${layoutMode}`}>
           {results.map((result) => (
             <div key={result.id} className="result-item">
               <div className="result-header">
@@ -151,10 +119,19 @@ const SearchResults = ({ results, loading, query, filters, onNewSearch }) => {
               </div>
 
               <div className="result-content">
-                <Link to={`/document/${result.id}`} className="result-title">
-                  {result.title}
-                </Link>
-                <p className="result-description">{result.content}</p>
+                {result.isError ? (
+                  <div className="error-result">
+                    <h3 className="result-title error-title">{result.title}</h3>
+                    <p className="result-description error-description">{result.content}</p>
+                  </div>
+                ) : (
+                  <>
+                    <Link to={`/document/${result.id}`} className="result-title">
+                      {result.title}
+                    </Link>
+                    <p className="result-description">{result.content}</p>
+                  </>
+                )}
                 
                 {result.highlights && result.highlights.length > 0 && (
                   <div className="result-highlights">
@@ -173,9 +150,11 @@ const SearchResults = ({ results, loading, query, filters, onNewSearch }) => {
                   <Clock size={14} />
                   <span>อัปเดตล่าสุด: {formatDate(result.lastUpdated)}</span>
                 </div>
-                <Link to={`/document/${result.id}`} className="view-document-btn">
-                  ดูเอกสาร
-                </Link>
+                {!result.isError && (
+                  <Link to={`/document/${result.id}`} className="view-document-btn">
+                    ดูเอกสาร
+                  </Link>
+                )}
               </div>
             </div>
           ))}

@@ -14,7 +14,7 @@
 }
 
 .hero-text {
-  space-y: var(--space-6);
+  max-width: 500px;
 }
 
 .hero-title {
@@ -27,10 +27,35 @@
 
 .title-highlight {
   display: block;
-  background: linear-gradient(135deg, #2563eb, #f472b6);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.title-highlight::after {
+  content: '💰';
+  position: absolute;
+  right: -2rem;
+  top: 0;
+  font-size: 0.8em;
+  animation: bounce-money 2s ease-in-out infinite;
+}
+
+.title-subtitle {
+  display: block;
+  font-size: 0.6em;
+  font-weight: 500;
+  color: var(--color-gray-600);
+  margin-top: 0.5rem;
+}
+
+@keyframes bounce-money {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-5px) rotate(-5deg); }
+  75% { transform: translateY(-2px) rotate(5deg); }
 }
 
 .hero-description {
@@ -89,130 +114,132 @@
   height: 100%;
 }
 
-.minimal-logo {
+.ultra-minimal-logo {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-.logo-icon {
+.logo-symbol {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.logo-shape {
+.symbol-part {
   position: absolute;
-  border-radius: 50%;
-  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.blue-shape {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  top: 0;
-  left: 0;
+.blue-part {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  top: 10px;
+  left: 10px;
+  transform: rotate(-15deg);
   z-index: 2;
 }
 
-.pink-shape {
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(135deg, #f472b6, #ec4899);
-  bottom: 0;
-  right: 0;
+.pink-part {
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-dark));
+  bottom: 10px;
+  right: 10px;
+  transform: rotate(15deg);
   z-index: 1;
 }
 
-.minimal-logo:hover .blue-shape {
-  transform: rotate(15deg) scale(1.1);
+.symbol-center {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  opacity: 0.9;
 }
 
-.minimal-logo:hover .pink-shape {
-  transform: rotate(-15deg) scale(1.1);
+.ultra-minimal-logo:hover .blue-part {
+  transform: rotate(-25deg) scale(1.1);
+  border-radius: 12px;
 }
 
-.logo-text {
-  font-size: 2.5rem;
-  font-weight: 800;
+.ultra-minimal-logo:hover .pink-part {
+  transform: rotate(25deg) scale(1.1);
+  border-radius: 12px;
+}
+
+.ultra-minimal-logo:hover .symbol-center {
+  transform: translate(-50%, -50%) scale(1.2);
+  opacity: 1;
+}
+
+.brand-name {
+  font-size: 2.8rem;
+  font-weight: 900;
   display: flex;
   align-items: center;
   text-align: center;
-  line-height: 1;
-  letter-spacing: -0.02em;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-.logo-blue {
-  color: #2563eb;
-  margin-right: 0.1rem;
+.brand-blue {
+  color: var(--color-primary);
+  margin-right: 0.05rem;
+  position: relative;
 }
 
-.logo-pink {
-  color: #f472b6;
+.brand-blue::before {
+  content: '฿';
+  position: absolute;
+  left: -1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.8rem;
+  opacity: 0.3;
+  color: var(--color-primary);
+  animation: pulse 2s infinite;
 }
 
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--space-8);
-  max-width: 1200px;
-  margin: var(--space-20) auto 0;
-  padding: 0 var(--space-6);
+.brand-pink {
+  color: var(--color-secondary);
+  position: relative;
 }
 
-.feature-card {
-  text-align: center;
-  padding: var(--space-8);
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--color-gray-100);
-  border-radius: var(--radius-2xl);
-  transition: all var(--transition-normal);
+.brand-pink::after {
+  content: '⚡';
+  position: absolute;
+  right: -1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  opacity: 0.4;
+  animation: sparkle 1.5s infinite alternate;
 }
 
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
-  background: rgba(255, 255, 255, 0.9);
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: translateY(-50%) scale(1); }
+  50% { opacity: 0.6; transform: translateY(-50%) scale(1.1); }
 }
 
-.feature-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 4rem;
-  height: 4rem;
-  background: linear-gradient(135deg, #dbeafe, #fce7f3);
-  border-radius: var(--radius-2xl);
-  color: #2563eb;
-  margin: 0 auto var(--space-6);
-  transition: all 0.3s ease;
+@keyframes sparkle {
+  0% { opacity: 0.4; transform: translateY(-50%) rotate(0deg); }
+  100% { opacity: 0.7; transform: translateY(-50%) rotate(15deg); }
 }
 
-.feature-card:hover .feature-icon {
-  background: linear-gradient(135deg, #2563eb, #f472b6);
-  color: white;
-  transform: scale(1.1);
-}
 
-.feature-title {
-  font-size: var(--text-xl);
-  font-weight: 600;
-  color: var(--color-gray-900);
-  margin: 0 0 var(--space-4);
-}
-
-.feature-description {
-  font-size: var(--text-base);
-  color: var(--color-gray-600);
-  line-height: 1.6;
-  margin: 0;
-}
 
 @media (max-width: 768px) {
   .landing-hero {
@@ -242,23 +269,23 @@
     max-height: 150px;
   }
   
-  .logo-icon {
-    width: 60px;
-    height: 60px;
+  .logo-symbol {
+    width: 80px;
+    height: 80px;
   }
   
-  .blue-shape {
-    width: 45px;
-    height: 45px;
+  .symbol-part {
+    width: 32px;
+    height: 32px;
   }
   
-  .pink-shape {
-    width: 38px;
-    height: 38px;
+  .symbol-center {
+    width: 16px;
+    height: 16px;
   }
   
-  .logo-text {
-    font-size: 2rem;
+  .brand-name {
+    font-size: 2.2rem;
   }
   
   .features-grid {
@@ -298,22 +325,79 @@
     max-height: 120px;
   }
   
-  .logo-icon {
-    width: 50px;
-    height: 50px;
+  .logo-symbol {
+    width: 70px;
+    height: 70px;
   }
   
-  .blue-shape {
-    width: 38px;
-    height: 38px;
+  .symbol-part {
+    width: 28px;
+    height: 28px;
   }
   
-  .pink-shape {
-    width: 30px;
-    height: 30px;
+  .symbol-center {
+    width: 14px;
+    height: 14px;
   }
   
-  .logo-text {
-    font-size: 1.8rem;
+  .brand-name {
+    font-size: 2rem;
   }
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-8);
+  max-width: 1200px;
+  margin: var(--space-20) auto 0;
+  padding: 0 var(--space-6);
+}
+
+.feature-card {
+  text-align: center;
+  padding: var(--space-8);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-gray-100);
+  border-radius: var(--radius-2xl);
+  transition: all var(--transition-normal);
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-secondary-light));
+  border-radius: var(--radius-2xl);
+  color: var(--color-primary);
+  margin: 0 auto var(--space-6);
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  transform: scale(1.1);
+}
+
+.feature-title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin: 0 0 var(--space-4);
+}
+
+.feature-description {
+  font-size: var(--text-base);
+  color: var(--color-gray-600);
+  line-height: 1.6;
+  margin: 0;
 }
