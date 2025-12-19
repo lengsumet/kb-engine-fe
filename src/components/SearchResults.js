@@ -22,6 +22,24 @@ const SearchResults = ({
     }
   };
 
+  const isLeaveDocument = (result) => {
+    const leaveKeywords = ['ลา', 'พักร้อน', 'ป่วย', 'กิจส่วนตัว', 'คลอด', 'leave'];
+    const title = result.title?.toLowerCase() || '';
+    const content = result.content?.toLowerCase() || '';
+    const category = result.category?.toLowerCase() || '';
+    
+    return leaveKeywords.some(keyword => 
+      title.includes(keyword) || 
+      content.includes(keyword) || 
+      category === 'ทรัพยากรบุคคล' && (title.includes('ลา') || content.includes('ลา'))
+    );
+  };
+
+  const getDocumentLink = (result) => {
+    // ส่งทุกเอกสารไปหน้า DocumentViewer
+    return `/document/${result.id}`;
+  };
+
   const getSearchTypeIcon = (searchType) => {
     switch (searchType) {
       case 'semantic': return <Star size={16} className="search-type-icon semantic" />;
@@ -116,7 +134,7 @@ const SearchResults = ({
                   </div>
                 ) : (
                   <>
-                    <Link to={`/document/${result.id}`} className="result-title">
+                    <Link to={getDocumentLink(result)} className="result-title">
                       {result.title}
                     </Link>
                     <p className="result-description">{result.content}</p>
@@ -141,7 +159,7 @@ const SearchResults = ({
                   <span>อัปเดตล่าสุด: {formatDate(result.lastUpdated)}</span>
                 </div>
                 {!result.isError && (
-                  <Link to={`/document/${result.id}`} className="view-document-btn">
+                  <Link to={getDocumentLink(result)} className="view-document-btn">
                     ดูเอกสาร
                   </Link>
                 )}

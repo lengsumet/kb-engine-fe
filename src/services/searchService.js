@@ -1,10 +1,16 @@
 import { searchMockDocuments } from '../data/mockSearchData';
 
-// Service for handling search operations using mock data
+// Service for handling search operations
 class SearchService {
   constructor() {
-    // Always use mock data for consistent results
-    this.useMockData = true;
+    // Get API URL from environment variables
+    this.apiUrl = process.env.REACT_APP_SEARCH_API_URL || 'http://localhost:8000/search';
+    this.useMockData = process.env.REACT_APP_USE_MOCK_DATA === 'true' || !process.env.REACT_APP_SEARCH_API_URL;
+    
+    console.log('SearchService initialized:', {
+      apiUrl: this.apiUrl,
+      useMockData: this.useMockData
+    });
   }
 
   // Main search function that calls the API

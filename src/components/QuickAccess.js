@@ -1,10 +1,9 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Users, CreditCard, Monitor, BookOpen, Shield, TrendingUp, Calendar, Clock, GitCompare } from 'lucide-react';
-import { getQuickAccessItems } from '../data/mockSearchData';
 import './QuickAccess.css';
 
 const QuickAccess = ({ onQuickSearch }) => {
+  const navigate = useNavigate();
   const categories = [
     {
       id: 'hr',
@@ -12,7 +11,8 @@ const QuickAccess = ({ onQuickSearch }) => {
       description: 'นโยบายทรัพยากรบุคคล การลา เงินเดือน',
       icon: Users,
       color: 'blue',
-      count: 156
+      count: 156,
+      redirect: '/search?q=นโยบาย HR'
     },
     {
       id: 'credit',
@@ -20,7 +20,8 @@ const QuickAccess = ({ onQuickSearch }) => {
       description: 'เกณฑ์การอนุมัติ ขั้นตอนการตรวจสอบ',
       icon: CreditCard,
       color: 'green',
-      count: 89
+      count: 89,
+      redirect: '/search?q=นโยบายสินเชื่อ'
     },
     {
       id: 'it',
@@ -28,7 +29,8 @@ const QuickAccess = ({ onQuickSearch }) => {
       description: 'การใช้งานระบบ แก้ไขปัญหาเทคนิค',
       icon: Monitor,
       color: 'purple',
-      count: 234
+      count: 234,
+      redirect: '/search?q=คู่มือ IT'
     },
     {
       id: 'operation',
@@ -36,7 +38,8 @@ const QuickAccess = ({ onQuickSearch }) => {
       description: 'ขั้นตอนการทำงาน กระบวนการต่างๆ',
       icon: BookOpen,
       color: 'orange',
-      count: 178
+      count: 178,
+      redirect: '/search?q=คู่มือปฏิบัติงาน'
     },
     {
       id: 'compliance',
@@ -44,7 +47,8 @@ const QuickAccess = ({ onQuickSearch }) => {
       description: 'กฎหมาย ระเบียบข้อบังคับ มาตรฐาน',
       icon: Shield,
       color: 'red',
-      count: 67
+      count: 67,
+      redirect: '/search?q=กฎระเบียบ'
     },
     {
       id: 'updates',
@@ -52,7 +56,8 @@ const QuickAccess = ({ onQuickSearch }) => {
       description: 'ข้อมูลใหม่ การเปลี่ยนแปลงนโยบาย',
       icon: TrendingUp,
       color: 'indigo',
-      count: 23
+      count: 23,
+      redirect: '/search?q=อัปเดตล่าสุด'
     }
   ];
 
@@ -68,11 +73,7 @@ const QuickAccess = ({ onQuickSearch }) => {
     return colors[color] || colors.blue;
   };
 
-  const handleQuickSearch = (searchType, params) => {
-    if (onQuickSearch) {
-      onQuickSearch(searchType, params);
-    }
-  };
+
 
   const quickSearches = [
     {
@@ -81,7 +82,8 @@ const QuickAccess = ({ onQuickSearch }) => {
       description: 'เปรียบเทียบวันหยุดระหว่างปี 2568 และ 2569',
       icon: Calendar,
       color: 'indigo',
-      action: () => handleQuickSearch('วันหยุด', { compareYear1: '2568', compareYear2: '2569' })
+      redirect: '/search?q=เปรียบเทียบวันหยุด',
+      action: () => navigate('/search?q=เปรียบเทียบวันหยุด')
     },
     {
       id: 'policy-updates',
@@ -89,7 +91,8 @@ const QuickAccess = ({ onQuickSearch }) => {
       description: 'ข้อมูลนโยบายที่อัปเดตในช่วง 30 วันที่ผ่านมา',
       icon: Clock,
       color: 'green',
-      action: () => handleQuickSearch('นโยบายใหม่', { dateRange: 'month' })
+      redirect: '/search?q=นโยบายใหม่ล่าสุด',
+      action: () => navigate('/search?q=นโยบายใหม่ล่าสุด')
     }
   ];
 
@@ -100,7 +103,8 @@ const QuickAccess = ({ onQuickSearch }) => {
       description: 'เปรียบเทียบเอกสาร 2 ฉบับเพื่อดูความแตกต่าง',
       icon: GitCompare,
       color: 'purple',
-      link: '/compare'
+      redirect: '/search?q=เปรียบเทียบไฟล์',
+      link: '/search?q=เปรียบเทียบไฟล์'
     }
   ];
 
@@ -166,7 +170,7 @@ const QuickAccess = ({ onQuickSearch }) => {
             return (
               <Link
                 key={category.id}
-                to={`/category/${category.id}`}
+                to={category.redirect}
                 className={`category-card ${getColorClasses(category.color)}`}
               >
                 <div className="category-icon">

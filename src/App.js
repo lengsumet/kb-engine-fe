@@ -7,6 +7,7 @@ import PerformanceMonitor from './components/PerformanceMonitor';
 import InteractiveChat from './components/InteractiveChat';
 import ChatTestPage from './pages/ChatTestPage';
 import IconDemo from './pages/IconDemo';
+import LeavePage from './pages/LeavePage';
 import { 
   LazyDocumentViewer,
   LazyCategoryBrowser,
@@ -52,6 +53,7 @@ function App() {
               <Route path="/chat-test" element={<ChatTestPage />} />
               <Route path="/icon-demo" element={<IconDemo />} />
               <Route path="/document/:id" element={<LazyDocumentViewer />} />
+              <Route path="/leave/:id" element={<LeavePage />} />
               <Route path="/category/:category" element={<LazyCategoryBrowser />} />
               <Route path="/updates" element={<LazyRecentUpdates />} />
               <Route path="/compare" element={<LazyComparisonPage />} />
