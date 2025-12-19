@@ -1,14 +1,14 @@
 import React from 'react';
 import { Clock, Search, TrendingUp } from 'lucide-react';
+import { getRecentSearches } from '../data/mockSearchData';
 import './RecentSearches.css';
 
 const RecentSearches = ({ onSearchSelect }) => {
-  const recentSearches = [
-    { query: 'นโยบายการลา', timestamp: '2024-01-15T10:30:00', results: 12 },
-    { query: 'ขั้นตอนการอนุมัติสินเชื่อ', timestamp: '2024-01-15T09:15:00', results: 8 },
-    { query: 'แก้ไขปัญหาระบบ', timestamp: '2024-01-14T16:45:00', results: 15 },
-    { query: 'กฎระเบียบใหม่', timestamp: '2024-01-14T14:20:00', results: 6 }
-  ];
+  const recentSearches = getRecentSearches().map((query, index) => ({
+    query,
+    timestamp: new Date(Date.now() - (index + 1) * 3600000).toISOString(), // Hours ago
+    results: Math.floor(Math.random() * 20) + 5
+  }));
 
   const popularSearches = [
     { query: 'คู่มือการใช้งานระบบใหม่', count: 156 },

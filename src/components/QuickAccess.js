@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Users, CreditCard, Monitor, BookOpen, Shield, TrendingUp, Calendar, Clock, GitCompare } from 'lucide-react';
+import { getQuickAccessItems } from '../data/mockSearchData';
 import './QuickAccess.css';
 
 const QuickAccess = ({ onQuickSearch }) => {

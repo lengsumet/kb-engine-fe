@@ -91,19 +91,9 @@ const SearchPage = ({ onOpenChat }) => {
         
         setSearchResults(mockComparisonData);
       } else {
-        // Use the new search API
-        const results = await searchService.performSearch(query);
-        
-        // Filter results based on search filters if needed
-        let filteredResults = results;
-        if (searchFilters.category && !results[0]?.isError) {
-          filteredResults = results.filter(r => r.category === searchFilters.category);
-        }
-        if (searchFilters.fileType && !results[0]?.isError) {
-          filteredResults = results.filter(r => r.fileType === searchFilters.fileType);
-        }
-
-        setSearchResults(filteredResults);
+        // Use mock search data
+        const results = await searchService.performSearch(query, searchFilters);
+        setSearchResults(results);
       }
     } catch (error) {
       console.error('Search error:', error);

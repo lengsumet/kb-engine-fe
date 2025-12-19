@@ -25,7 +25,7 @@ const lazyWithRetry = (componentImport, retries = 3) => {
 // Lazy load heavy components to improve initial load time
 export const LazyFileComparison = lazyWithRetry(() => import('../components/FileComparison'));
 export const LazyTimelineComparison = lazyWithRetry(() => import('../components/TimelineComparison'));
-export const LazyAIAnswerBox = lazyWithRetry(() => import('../components/AIAnswerBox'));
+export const LazyAnswerBox = lazyWithRetry(() => import('../components/AIAnswerBox'));
 export const LazyRelatedQuestions = lazyWithRetry(() => import('../components/RelatedQuestions'));
 export const LazyFileSelector = lazyWithRetry(() => import('../components/FileSelector'));
 export const LazyInteractiveChat = lazyWithRetry(() => import('../components/InteractiveChat'));
@@ -58,7 +58,7 @@ export const preloadCriticalComponents = () => {
   // Preload components that are likely to be used soon
   setTimeout(() => {
     preloadComponent(() => import('../components/FileComparison'), 'FileComparison');
-    preloadComponent(() => import('../components/AIAnswerBox'), 'AIAnswerBox');
+    preloadComponent(() => import('../components/AIAnswerBox'), 'AnswerBox');
   }, 2000);
   
   setTimeout(() => {
@@ -83,7 +83,7 @@ export const preloadOnHover = (componentName) => {
     'RecentUpdates': () => import('../pages/RecentUpdates'),
     'InteractiveChat': () => import('../components/InteractiveChat'),
     'PopularContent': () => import('../components/PopularContent'),
-    'AIAnswerBox': () => import('../components/AIAnswerBox'),
+    'AnswerBox': () => import('../components/AIAnswerBox'),
     'RelatedQuestions': () => import('../components/RelatedQuestions')
   };
   
