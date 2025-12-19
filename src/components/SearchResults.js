@@ -56,7 +56,7 @@ const SearchResults = ({
       <div className="search-results">
         <div className="search-loading">
           <div className="loading-spinner"></div>
-          <p>กำลังค้นหาด้วย AI Hybrid Search...</p>
+          <p>กำลังค้นหาข้อมูล...</p>
         </div>
       </div>
     );
@@ -105,16 +105,6 @@ const SearchResults = ({
                     {getCategoryLabel(result.category)}
                   </div>
                   {getSearchTypeIcon(result.searchType)}
-                </div>
-                <div className="relevance-score">
-                  <span className="score-label">ความเกี่ยวข้อง:</span>
-                  <div className="score-bar">
-                    <div 
-                      className="score-fill" 
-                      style={{ width: `${result.relevanceScore * 100}%` }}
-                    ></div>
-                  </div>
-                  <span className="score-value">{Math.round(result.relevanceScore * 100)}%</span>
                 </div>
               </div>
 

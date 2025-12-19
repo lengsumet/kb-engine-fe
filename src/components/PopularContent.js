@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingUp, Eye, Clock, Calendar, ArrowUp, ArrowDown, Minus } from 'lucide-react';
+import { getPopularDocuments } from '../data/mockSearchData';
 import './PopularContent.css';
 
 const PopularContent = ({ timeRange = '7days', onContentClick }) => {
@@ -16,10 +17,20 @@ const PopularContent = ({ timeRange = '7days', onContentClick }) => {
     setLoading(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise(resolve => setTimeout(resolve, 300));
       
-      // Mock popular content data
-      const mockData = generateMockPopularContent(selectedRange);
+      // Get popular documents from mock data
+      const docs = getPopularDocuments(8);
+      const mockData = docs.map((doc, index) => ({
+        ...doc,
+        trend: index % 3 === 0 ? 'up' : index % 3 === 1 ? 'down' : 'same',
+        trendValue: index % 3 === 0 ? Math.floor(Math.random() * 20) + 10 : 
+                     index % 3 === 1 ? -Math.floor(Math.random() * 10) - 5 : 0,
+        lastViewed: new Date(Date.now() - (index + 1) * 3600000).toISOString(),
+        description: `เอกสารเกี่ยวกับ${doc.title}`,
+        tags: [doc.category, 'เอกสาร', 'ยอดนิยม']
+      }));
+      
       setPopularContent(mockData);
     } catch (error) {
       console.error('Error loading popular content:', error);

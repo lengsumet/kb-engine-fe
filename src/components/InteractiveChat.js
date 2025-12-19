@@ -164,7 +164,6 @@ const InteractiveChat = ({ isOpen, onToggle, initialQuery = '' }) => {
     return (
       <button onClick={onToggle} className="chat-toggle-btn">
         <ChatIcon size={28} />
-        <span className="chat-badge">AI</span>
       </button>
     );
   }

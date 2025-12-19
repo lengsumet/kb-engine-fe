@@ -1,12 +1,10 @@
-// Service for handling search API operations
+import { searchMockDocuments } from '../data/mockSearchData';
+
+// Service for handling search operations using mock data
 class SearchService {
   constructor() {
-    // Use proxy server in development, direct API in production
-    if (process.env.NODE_ENV === 'development') {
-      this.apiUrl = 'http://localhost:3001/api/search';
-    } else {
-      this.apiUrl = process.env.REACT_APP_SEARCH_API_URL
-    }
+    // Always use mock data for consistent results
+    this.useMockData = true;
   }
 
   // Main search function that calls the API
@@ -85,7 +83,7 @@ class SearchService {
       'hello': 'สวัสดีครับ! ยินดีต้อนรับสู่ระบบค้นหาข้อมูล คุณสามารถถามคำถามเกี่ยวกับเอกสาร นโยบาย หรือข้อมูลต่างๆ ได้',
       'test': 'ระบบทำงานปกติ คุณสามารถค้นหาข้อมูลได้ตามปกติ',
       'weather': 'ขออภัย ระบบนี้ไม่มีข้อมูลสภาพอากาศ แต่สามารถค้นหาข้อมูลเอกสารและนโยบายต่างๆ ได้',
-      'default': `ขออภัย ขณะนี้ระบบ AI Search API กำลังมีปัญหาชั่วคราว\n\nสำหรับคำถาม: "${query}"\n\nกรุณาลองใหม่อีกครั้งในภายหลัง หรือใช้ฟีเจอร์ค้นหาเอกสารแทน`
+      'default': `ขออภัย ขณะนี้ระบบค้นหากำลังมีปัญหาชั่วคราว\n\nสำหรับคำถาม: "${query}"\n\nกรุณาลองใหม่อีกครั้งในภายหลัง หรือใช้ฟีเจอร์ค้นหาเอกสารแทน`
     };
 
     const answer = mockAnswers[query.toLowerCase()] || mockAnswers.default;
@@ -98,28 +96,37 @@ class SearchService {
     };
   }
 
-  // Handle search with error handling and formatting
-  async performSearch(query) {
+  // Handle search with mock data
+  async performSearch(query, filters = {}) {
     try {
-      const result = await this.search(query);
-      return [this.formatSearchResult(result)];
-    } catch (error) {
-      console.log('API failed, using fallback response');
+      // Simulate search delay for realistic experience
+      await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 700));
       
-      // Check if it's an API error (500) - provide mock response
-      if (error.message.includes('API Error') || error.message.includes('500')) {
-        const mockResult = this.getMockResponse(query);
-        const formattedResult = this.formatSearchResult(mockResult);
-        formattedResult.title = `คำตอบจำลอง: ${query}`;
-        formattedResult.category = 'mock-result';
-        return [formattedResult];
+      // Use mock data for search
+      const results = searchMockDocuments(query, filters);
+      
+      if (results.length === 0) {
+        return [{
+          id: Date.now(),
+          title: 'ไม่พบผลการค้นหา',
+          content: `ไม่พบเอกสารที่เกี่ยวข้องกับ "${query}" ลองใช้คำค้นหาอื่น หรือตรวจสอบการสะกดคำ`,
+          category: 'no-results',
+          fileType: 'info',
+          lastUpdated: new Date().toLocaleDateString('th-TH'),
+          relevanceScore: 0,
+          searchType: 'mock',
+          highlights: [],
+          isNoResults: true
+        }];
       }
       
-      // For other errors, return error message
+      return results;
+    } catch (error) {
+      console.error('Search error:', error);
       return [{
         id: Date.now(),
         title: 'เกิดข้อผิดพลาดในการค้นหา',
-        content: error.message,
+        content: 'ไม่สามารถค้นหาข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง',
         category: 'error',
         fileType: 'error',
         lastUpdated: new Date().toLocaleDateString('th-TH'),

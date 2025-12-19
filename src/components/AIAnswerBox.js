@@ -201,7 +201,7 @@ ${results.slice(0, 3).map((r, i) => `${i + 1}. ${r.title}`).join('\n')}
         <div className="answer-header">
           <div className="ai-badge">
             <Sparkles size={16} />
-            <span>AI กำลังสร้างคำตอบ...</span>
+            <span>กำลังสร้างสรุปข้อมูล...</span>
           </div>
         </div>
         <div className="answer-loading">
@@ -210,7 +210,7 @@ ${results.slice(0, 3).map((r, i) => `${i + 1}. ${r.title}`).join('\n')}
             <span></span>
             <span></span>
           </div>
-          <p>กำลังวิเคราะห์เอกสารและสร้างคำตอบที่เหมาะสม</p>
+          <p>กำลังวิเคราะห์เอกสารและสร้างสรุปข้อมูลที่เหมาะสม</p>
         </div>
       </div>
     );
@@ -226,10 +226,10 @@ ${results.slice(0, 3).map((r, i) => `${i + 1}. ${r.title}`).join('\n')}
         <div className="header-left">
           <div className="ai-badge">
             <Sparkles size={16} />
-            <span>คำตอบจาก AI</span>
+            <span>สรุปข้อมูล</span>
           </div>
           <div className="confidence-badge" data-confidence={answer.confidence >= 0.9 ? 'high' : answer.confidence >= 0.7 ? 'medium' : 'low'}>
-            ความมั่นใจ: {Math.round(answer.confidence * 100)}%
+            ความเกี่ยวข้อง: {Math.round(answer.confidence * 100)}%
           </div>
         </div>
         <div className="header-actions">
@@ -316,7 +316,7 @@ ${results.slice(0, 3).map((r, i) => `${i + 1}. ${r.title}`).join('\n')}
 
           <div className="answer-disclaimer">
             <p>
-              ⚠️ คำตอบนี้สร้างโดย AI จากการวิเคราะห์เอกสารในระบบ 
+              ⚠️ ข้อมูลนี้สรุปจากเอกสารในระบบ 
               กรุณาตรวจสอบข้อมูลจากเอกสารต้นฉบับเพื่อความแม่นยำ
             </p>
           </div>
