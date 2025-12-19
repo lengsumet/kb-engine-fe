@@ -484,12 +484,12 @@ Responsive Web Design เป็นการออกแบบเว็บไซ�
                   </div>
                 </div>
 
-                <button className="compare-action-btn" onClick={handleCompare}>
+                {/* <button className="compare-action-btn" onClick={handleCompare}>
                   เปรียบเทียบบทความ
-                </button>
+                </button> */}
 
                 <div className="comparison-details">
-                  <div className="details-section">
+                  {/* <div className="details-section">
                     <h3 className="details-title">📋 บทความปัจจุบัน</h3>
                     <div className="details-stats">
                       <div className="stat-item">
@@ -505,9 +505,9 @@ Responsive Web Design เป็นการออกแบบเว็บไซ�
                       <h4>{comparisonData.doc1.title}</h4>
                       <p>{comparisonData.doc1.summary}</p>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="details-section">
+                  {/* <div className="details-section">
                     <h3 className="details-title">🔍 บทความที่เปรียบเทียบ</h3>
                     <div className="details-stats">
                       <div className="stat-item">
@@ -523,7 +523,7 @@ Responsive Web Design เป็นการออกแบบเว็บไซ�
                       <h4>{comparisonData.doc2.title}</h4>
                       <p>{comparisonData.doc2.summary}</p>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="comparison-differences">
